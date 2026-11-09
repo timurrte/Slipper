@@ -3,3 +3,7 @@ target_sources(Slipper
 	PRIVATE
 		application.cxx
 )
+target_link_libraries(Slipper
+	PRIVATE
+		GraphicsGL
+)
