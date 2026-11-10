@@ -1,5 +1,5 @@
 #pragma once
 
 namespace GraphicsGL {
-	int sayHello();
+	int run();
 }

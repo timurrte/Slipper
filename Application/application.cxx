@@ -1,5 +1,5 @@
 #include <GraphicsGL.h>
 
 int main() {
-	return GraphicsGL::sayHello();
+	return GraphicsGL::run();
 }
