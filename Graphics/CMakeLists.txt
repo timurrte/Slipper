@@ -3,6 +3,7 @@ add_library(GraphicsGL)
 target_sources(GraphicsGL
     PRIVATE
         GraphicsGL.cxx
+        glad.c
     PUBLIC
         FILE_SET HEADERS
         FILES
