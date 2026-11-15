@@ -9,11 +9,22 @@ target_sources(GraphicsGL
         FILES
             GraphicsGL.h
 )
+
+# 1. Find GLFW (installed via Homebrew)
+find_package(glfw3 REQUIRED)
+
+# 2. Find system OpenGL framework (macOS default)
+find_package(OpenGL REQUIRED)
+
+# 3. Include directories for GLAD and public headers
 target_include_directories(GraphicsGL
     PRIVATE
-        "C:/include"
+        ${CMAKE_SOURCE_DIR}/include
 )
+
+# 4. Link dependencies portably
 target_link_libraries(GraphicsGL
     PRIVATE
-        "C:/libs/GLFW/glfw3.lib"
+        glfw
+        OpenGL::GL
 )
