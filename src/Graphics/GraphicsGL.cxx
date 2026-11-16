@@ -260,7 +260,6 @@ namespace GraphicsGL {
 	glDeleteBuffers(1, &EBO);
 	glDeleteProgram(programYellowFrag);
         glDeleteProgram(program);
-
         glfwDestroyWindow(window);
         glfwTerminate();
         return 0;

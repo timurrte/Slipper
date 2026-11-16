@@ -1,9 +1,11 @@
 @echo off
 setlocal
+if not defined VSCMD_VER call "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Auxiliary\Build\vcvars64.bat"
 
 if "%~1"=="" (
     cmake --build build --target run
 ) else if /i "%~1"=="generate" (
+    if exist build rmdir /s /q build
     cmake -G Ninja -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 ) else (
     echo Unknown argument: "%~1"
