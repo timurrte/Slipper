@@ -3,26 +3,32 @@
 #include <GLFW/glfw3.h>
 
 namespace {
-    const char* kVertexSrc = "#version 330 core\n"
-        "layout (location = 0) in vec3 aPos;\n"
-        "void main()\n"
-        "{\n"
-        "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-        "}\0";
+  const char* kVertexSrc = R"glsl(
+        #version 330 core
+        layout (location = 0) in vec3 aPos;
+        void main()
+        {
+           gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
+        }
+        )glsl";
 
-    const char* kFragmentSrc = "#version 330 core\n"
-        "out vec4 FragColor;\n"
-        "void main()\n"
-        "{\n"
-        "    FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-        "}\0";
+  const char* kFragmentSrc = R"glsl(
+        #version 330 core
+        out vec4 FragColor;
+        void main()
+        {
+            FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);
+        }
+        )glsl";
 
-    const char* kFragmentSrcYellow = "#version 330 core\n"
-      "out vec4 FragColor;\n"
-      "void main()\n"
-      "{\n"
-      "FragColor = vec4(1.0f, 1.0f, 0.0f, 1.0f);\n"
-      "}\0";
+  const char* kFragmentSrcYellow = R"glsl(
+      #version 330 core
+      out vec4 FragColor;
+      void main()
+      {
+        FragColor = vec4(1.0f, 1.0f, 0.0f, 1.0f);
+      }
+      )glsl";
 
 	float kVertices1[] = {
         // first triangle
