@@ -257,6 +257,8 @@ namespace GraphicsGL {
         glDeleteBuffers(1, &VBO1);
 	glDeleteVertexArrays(1, &VAO2);
         glDeleteBuffers(1, &VBO2);
+	glDeleteBuffers(1, &EBO);
+	glDeleteProgram(programYellowFrag);
         glDeleteProgram(program);
 
         glfwDestroyWindow(window);
