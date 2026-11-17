@@ -3,48 +3,33 @@
 #include <GLFW/glfw3.h>
 
 namespace {
-  const char* kVertexSrc = R"glsl(
-        #version 330 core
-        layout (location = 0) in vec3 aPos;
-        void main()
-        {
-           gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
-        }
-        )glsl";
+const char *kVertexSrc = R"glsl(
+#version 330 core
+layout (location = 0) in vec3 aPos;
+layout (location = 1) in vec3 aColor;
+out vec3 vertexColor;
+void main()
+  {
+    gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
+    vertexColor = aColor;
+  }
+)glsl";
 
-  const char* kFragmentSrc = R"glsl(
-        #version 330 core
-        out vec4 FragColor;
-        void main()
-        {
-            FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);
-        }
-        )glsl";
-
-  const char* kFragmentSrcYellow = R"glsl(
-      #version 330 core
-      out vec4 FragColor;
-      void main()
-      {
-        FragColor = vec4(1.0f, 1.0f, 0.0f, 1.0f);
-      }
-      )glsl";
+const char *kFragmentSrc = R"glsl(
+#version 330 core
+out vec4 FragColor;
+in vec3 vertexColor;
+void main()
+{
+  FragColor = vec4(vertexColor, 1.0);
+}
+)glsl";
 
 	float kVertices1[] = {
-        // first triangle
-        -0.9f, -0.5f, 0.0f,  // left 
-        -0.0f, -0.5f, 0.0f,  // right
-        -0.45f, 0.5f, 0.0f   // top
-    };
-    float kVertices2[] = {
-        // second triangle
-         0.0f, -0.5f, 0.0f,  // left
-         0.9f, -0.5f, 0.0f,  // right
-         0.45f, 0.5f, 0.0f   // top 
-    }; 
-    unsigned int indices[] = {
-        0, 1, 2,
-        2, 3, 4
+        // positions       // colors
+        -0.5, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
+        0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
+        0.0f, 0.5f, 0.0f,   0.0f, 0.0f, 1.0f
     };
 
     void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
@@ -197,19 +182,15 @@ namespace GraphicsGL {
         glViewport(0, 0, fbw, fbh);
 
         unsigned int program = createProgram(kVertexSrc, kFragmentSrc);
-	unsigned int programYellowFrag = createProgram(kVertexSrc, kFragmentSrcYellow);
-        if (!program || !programYellowFrag) {
+        if (!program) {
             glfwDestroyWindow(window);
             glfwTerminate();
             return -1;
         }
 
-        unsigned int VAO1, VAO2, VBO1, VBO2, EBO;
+        unsigned int VAO1, VBO1;
         glGenVertexArrays(1, &VAO1);
-        glGenVertexArrays(1, &VAO2);
         glGenBuffers(1, &VBO1);
-        glGenBuffers(1, &VBO2);
-        glGenBuffers(1, &EBO);
 
         glBindVertexArray(VAO1);
 
@@ -217,21 +198,11 @@ namespace GraphicsGL {
         glBindBuffer(GL_ARRAY_BUFFER, VBO1);
         glBufferData(GL_ARRAY_BUFFER, sizeof(kVertices1), kVertices1, GL_STATIC_DRAW);
 
-        // EBO
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), nullptr);
         glEnableVertexAttribArray(0);
 
-	glBindVertexArray(VAO2);
-
-	// VBO2
-	glBindBuffer(GL_ARRAY_BUFFER, VBO2);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(kVertices2), kVertices2, GL_STATIC_DRAW);
-
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
-	glEnableVertexAttribArray(0);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), reinterpret_cast<void*>(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
 	
         // main loop
         while (!glfwWindowShouldClose(window)) {
@@ -243,22 +214,15 @@ namespace GraphicsGL {
             glClear(GL_COLOR_BUFFER_BIT);
 
             glUseProgram(program);
-	    glBindVertexArray(VAO1);
+
+            glBindVertexArray(VAO1);
             glDrawArrays(GL_TRIANGLES, 0, 3);
-	    glUseProgram(programYellowFrag);
-	    glBindVertexArray(VAO2);
-	    glDrawArrays(GL_TRIANGLES, 0, 3);
-            // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
             glfwPollEvents();
             glfwSwapBuffers(window);
         }
         glDeleteVertexArrays(1, &VAO1);
         glDeleteBuffers(1, &VBO1);
-	glDeleteVertexArrays(1, &VAO2);
-        glDeleteBuffers(1, &VBO2);
-	glDeleteBuffers(1, &EBO);
-	glDeleteProgram(programYellowFrag);
         glDeleteProgram(program);
         glfwDestroyWindow(window);
         glfwTerminate();
