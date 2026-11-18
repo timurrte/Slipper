@@ -117,7 +117,6 @@ namespace GraphicsGL {
         glViewport(0, 0, fbw, fbh);
 
         Shader shader("shaders/shader.vs", "shaders/shader.fs");
-        shader.use();
 
         unsigned int VAO1, VBO1;
         glGenVertexArrays(1, &VAO1);
@@ -143,6 +142,9 @@ namespace GraphicsGL {
 
             glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
+            
+	    shader.use();            
+	    shader.setFloat("offset", 0.5);
 
             glBindVertexArray(VAO1);
             glDrawArrays(GL_TRIANGLES, 0, 3);
