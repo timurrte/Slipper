@@ -16,5 +16,5 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(glfw)
 
 add_subdirectory(vendors/glad)
-add_subdirectory(src/Application)
-add_subdirectory(src/Graphics)
+add_subdirectory(src/application)
+add_subdirectory(src/graphics)
