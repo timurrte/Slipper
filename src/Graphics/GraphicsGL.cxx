@@ -116,7 +116,7 @@ namespace GraphicsGL {
         glfwGetFramebufferSize(window, &fbw, &fbh);
         glViewport(0, 0, fbw, fbh);
 
-        Shader shader("src/Shaders/shader.vs", "src/Shaders/shader.fs");
+        Shader shader("shaders/shader.vs", "shaders/shader.fs");
         shader.use();
 
         unsigned int VAO1, VBO1;

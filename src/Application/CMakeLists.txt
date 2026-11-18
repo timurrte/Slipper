@@ -11,7 +11,7 @@ target_link_libraries(Slipper
 add_custom_target(run
     COMMAND $<TARGET_FILE:Slipper>
     DEPENDS Slipper
-    WORKING_DIRECTORY ${CMAKE_PROJECT_DIR}
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     USES_TERMINAL
     COMMENT "Running app..."
 )

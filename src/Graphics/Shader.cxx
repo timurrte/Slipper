@@ -54,7 +54,7 @@ namespace GraphicsGL {
   glCompileShader(fragment);
   glGetShaderiv(fragment, GL_COMPILE_STATUS, &success);
   if (!success) {
-    glGetShaderInfoLog(vertex, 512, NULL, infoLog);
+    glGetShaderInfoLog(fragment, 512, NULL, infoLog);
     std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
   }
 
