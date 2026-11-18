@@ -25,7 +25,7 @@ void main()
 }
 )glsl";
 
-	float kVertices1[] = {
+float kVertices1[] = { 
         // positions       // colors
         -0.5, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
         0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,

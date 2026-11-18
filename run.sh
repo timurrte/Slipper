@@ -1,12 +1,17 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
 
-if [ -z "$1" ]; then
-    cmake --build build --target run
-elif [ "${1,,}" = "generate" ]; then
-    cmake -G Ninja -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
-else
-    echo "Unknown argument: \"$1\""
-    echo "Usage: $(basename "$0") [generate]"
-    exit 1
-fi
+case "${1:-}" in
+    "")
+        cmake --build build --target run
+        ;;
+    generate)
+        rm -rf build/CMakeCache.txt
+        cmake -G Ninja -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+        ;;
+    *)
+        echo "Unknown argument: \"$1\""
+        echo "Usage: $(basename "$0") [generate]"
+        exit 1
+        ;;
+esac
