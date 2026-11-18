@@ -1,6 +1,5 @@
 #ifndef SHADER_H
 #define SHADER_H
-#include <Shader.h>
 #include <glad/glad.h>
 
 #include <string>
@@ -15,5 +14,5 @@ namespace GraphicsGL {
   void setInt(const std::string &name, int value) const;
   void setFloat(const std::string &name, float value) const;
   };
-};
+}
 #endif

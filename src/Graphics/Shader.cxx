@@ -58,6 +58,17 @@ namespace GraphicsGL {
     std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
   }
 
+  ID = glCreateProgram();
+  glAttachShader(ID, vertex);
+  glAttachShader(ID, fragment);
+  glLinkProgram(ID);
+
+  glGetProgramiv(ID, GL_LINK_STATUS, &success);
+  if (!success) {
+    glGetProgramInfoLog(ID, 512, NULL, infoLog);
+    std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;    
+    }    
+  
   glDeleteShader(vertex);
   glDeleteShader(fragment);
   };
