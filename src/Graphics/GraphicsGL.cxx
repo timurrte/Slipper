@@ -1,30 +1,9 @@
 #include <iostream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <Shader.h>
 
 namespace {
-const char *kVertexSrc = R"glsl(
-#version 330 core
-layout (location = 0) in vec3 aPos;
-layout (location = 1) in vec3 aColor;
-out vec3 vertexColor;
-void main()
-  {
-    gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
-    vertexColor = aColor;
-  }
-)glsl";
-
-const char *kFragmentSrc = R"glsl(
-#version 330 core
-out vec4 FragColor;
-in vec3 vertexColor;
-void main()
-{
-  FragColor = vec4(vertexColor, 1.0);
-}
-)glsl";
-
 float kVertices1[] = { 
         // positions       // colors
         -0.5, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
@@ -40,52 +19,8 @@ float kVertices1[] = {
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
             glfwSetWindowShouldClose(window, true);
     }
-
-    unsigned int compileShader(GLenum type, const char* source) {
-        unsigned int shader = glCreateShader(type);
-        glShaderSource(shader, 1, &source, nullptr);
-        glCompileShader(shader);
-
-        int ok = 0;
-        glGetShaderiv(shader, GL_COMPILE_STATUS, &ok);
-        if (!ok) {
-            char log[512];
-            glGetShaderInfoLog(shader, sizeof(log), nullptr, log);
-            std::cout << "ERROR::SHADER::COMPILATION_FAILED\n" << log << std::endl;
-            glDeleteShader(shader);
-            return 0;
-        }
-        return shader;
-    }
-
     unsigned int createProgram(const char* vsSrc, const char* fsSrc) {
-        unsigned int vs = compileShader(GL_VERTEX_SHADER, vsSrc);
-        unsigned int fs = compileShader(GL_FRAGMENT_SHADER, fsSrc);
-
-        if (!vs || !fs) {
-            glDeleteShader(vs);
-            glDeleteShader(fs);
-            return 0;
-        }
-
-        unsigned int program = glCreateProgram();
-        glAttachShader(program, vs);
-        glAttachShader(program, fs);
-        glLinkProgram(program);
-
-        glDeleteShader(vs);
-        glDeleteShader(fs);
-
-        int ok = 0;
-        glGetProgramiv(program, GL_LINK_STATUS, &ok);
-        if (!ok) {
-            char log[512];
-            glGetProgramInfoLog(program, sizeof(log), nullptr, log);
-            std::cerr << "Program linking failed" << log << std::endl;
-            glDeleteProgram(program);
-            return 0;
-        }
-        return program;
+      
     }
 
     void APIENTRY debugCallback(GLenum source, GLenum type, GLuint id,
@@ -181,12 +116,8 @@ namespace GraphicsGL {
         glfwGetFramebufferSize(window, &fbw, &fbh);
         glViewport(0, 0, fbw, fbh);
 
-        unsigned int program = createProgram(kVertexSrc, kFragmentSrc);
-        if (!program) {
-            glfwDestroyWindow(window);
-            glfwTerminate();
-            return -1;
-        }
+        Shader shader("src/Shaders/shader.vs", "src/Shaders/shader.fs");
+        shader.use();
 
         unsigned int VAO1, VBO1;
         glGenVertexArrays(1, &VAO1);
@@ -213,8 +144,6 @@ namespace GraphicsGL {
             glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
 
-            glUseProgram(program);
-
             glBindVertexArray(VAO1);
             glDrawArrays(GL_TRIANGLES, 0, 3);
 
@@ -223,7 +152,6 @@ namespace GraphicsGL {
         }
         glDeleteVertexArrays(1, &VAO1);
         glDeleteBuffers(1, &VBO1);
-        glDeleteProgram(program);
         glfwDestroyWindow(window);
         glfwTerminate();
         return 0;
