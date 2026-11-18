@@ -5,7 +5,7 @@ if not defined VSCMD_VER call "C:\Program Files\Microsoft Visual Studio\18\Commu
 if "%~1"=="" (
     cmake --build build --target run
 ) else if /i "%~1"=="generate" (
-    if exist build rmdir /s /q build
+    if exist "build\CMakeCache.txt" del /f /q "build\CMakeCache.txt"
     cmake -G Ninja -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 ) else (
     echo Unknown argument: "%~1"
