@@ -19,10 +19,6 @@ float kVertices1[] = {
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
             glfwSetWindowShouldClose(window, true);
     }
-    unsigned int createProgram(const char* vsSrc, const char* fsSrc) {
-      
-    }
-
     void APIENTRY debugCallback(GLenum source, GLenum type, GLuint id,
         GLenum severity, GLsizei length,
         const GLchar* message, const void* userParam) {
