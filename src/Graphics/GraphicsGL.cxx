@@ -1,6 +1,6 @@
-#include <GLFW/glfw3.h>
 #include <Shader.h>
 #include <glad/glad.h>
+#include <GLFW/glfw3.h>
 #include <iostream>
 
 #define STB_IMAGE_IMPLEMENTATION
@@ -13,6 +13,11 @@ float kVertices1[] = {
     0.5f,  -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, // bottom right
     -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom left
     -0.5f, 0.5f,  0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f  // top left
+};
+
+unsigned int kIndices1[] = {
+    0, 1, 3, // first triangle
+    1, 2, 3  // second triangle
 };
 void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
   glViewport(0, 0, width, height);
@@ -153,15 +158,20 @@ int run() {
 
   Shader shader("shaders/shader.vs", "shaders/shader.fs");
 
-  unsigned int VAO1, VBO1;
+  unsigned int VAO1, VBO1, EBO1;
   glGenVertexArrays(1, &VAO1);
   glGenBuffers(1, &VBO1);
+  glGenBuffers(1, &EBO1);
 
   glBindVertexArray(VAO1);
 
   // VBO1
   glBindBuffer(GL_ARRAY_BUFFER, VBO1);
   glBufferData(GL_ARRAY_BUFFER, sizeof(kVertices1), kVertices1, GL_STATIC_DRAW);
+
+// EBO1 (must be bound while VAO1 is bound so VAO1 records it)
+glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO1);
+glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(kIndices1), kIndices1, GL_STATIC_DRAW);
 
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), nullptr);
   glEnableVertexAttribArray(0);
@@ -212,6 +222,7 @@ int run() {
   }
   glDeleteVertexArrays(1, &VAO1);
   glDeleteBuffers(1, &VBO1);
+  glDeleteBuffers(1, &EBO1);
   glfwDestroyWindow(window);
   glfwTerminate();
   return 0;
