@@ -3,12 +3,18 @@
 #include <GLFW/glfw3.h>
 #include <Shader.h>
 
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
+
 namespace {
-float kVertices1[] = { 
-        // positions       // colors
-        -0.5, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
-        0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
-        0.0f, 0.5f, 0.0f,   0.0f, 0.0f, 1.0f
+float kVertices1[] = {// positions       // colors
+                      -0.5, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.5f, -0.5f, 0.0f,
+                      0.0f, 1.0f,  0.0f, 0.0f, 0.5f, 0.0f, 0.0f, 0.0f,  1.0f};
+
+float texCoords[] = {
+    0.0f, 0.0f,
+    1.0f, 0.0f,
+    0.5f, 1.0f
     };
 
     void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
@@ -128,8 +134,25 @@ namespace GraphicsGL {
         glEnableVertexAttribArray(0);
 
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), reinterpret_cast<void*>(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
-	
+        glEnableVertexAttribArray(1);
+
+        int width, height, nrChannels;
+        unsigned char *data = stbi_load("textures/container.jpg", &width, &height, &nrChannels, 0);
+        unsigned int texture;
+        glGenTextures(1, &texture);
+        glBindTexture(GL_TEXTURE_2D, texture);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+        if (data) {
+          glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
+                     GL_UNSIGNED_BYTE, data);
+          glGenerateMipmap(GL_TEXTURE_2D);
+        } else {
+          std::cout << "Failed to load texture" << std::endl;
+	}          
+	stbi_image_free(data);        
         // main loop
         while (!glfwWindowShouldClose(window)) {
             processInput(window);
