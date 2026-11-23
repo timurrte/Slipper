@@ -18,4 +18,4 @@ target_link_libraries(GraphicsGL
         glad::glad
         OpenGL::GL
 )
-target_include_directories(GraphicsGL PRIVATE "${CMAKE_SOURCE_DIR}/vendors/stb_image")
+target_include_directories(GraphicsGL PRIVATE "${CMAKE_SOURCE_DIR}/vendors")

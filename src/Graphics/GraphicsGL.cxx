@@ -5,8 +5,12 @@
 #include <iostream>
 #include <algorithm>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 #define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
+#include <stb_image/stb_image.h>
 
 namespace {
   float mixStrength = 0.2f;
@@ -245,7 +249,11 @@ int run() {
   shader.setInt("texture1", 0);
   shader.setInt("texture2", 1);
   shader.setFloat("offset", 0.5);
-
+glm::vec4 vec(1.0f, 0.0f, 0.0f, 1.0f);
+glm::mat4 trans = glm::mat4(1.0f);
+trans = glm::translate(trans, glm::vec3(1.0f, 1.0f, 0.0f));
+vec = trans * vec;
+std::cout << vec.x << vec.y << vec.z << std::endl;
   // main loop
   while (!glfwWindowShouldClose(window)) {
     float currentFrame = static_cast<float>(glfwGetTime());
