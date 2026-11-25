@@ -4,6 +4,7 @@
 #include <Shader.h>
 #include <iostream>
 #include <algorithm>
+#include <cmath>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -202,6 +203,7 @@ int run() {
   glEnableVertexAttribArray(2);
 
   // First texture
+  stbi_set_flip_vertically_on_load(true);  
   int width, height, nrChannels;
   unsigned char *data =
       stbi_load("textures/container.jpg", &width, &height, &nrChannels, 0);
@@ -226,7 +228,6 @@ int run() {
   stbi_image_free(data);
 
   // Second texture
-  stbi_set_flip_vertically_on_load(true);  
   data = stbi_load("textures/awesomeface.png", &width, &height, &nrChannels, 0);
   unsigned int texture2;
   glGenTextures(1, &texture2);
@@ -248,12 +249,7 @@ int run() {
   shader.use();
   shader.setInt("texture1", 0);
   shader.setInt("texture2", 1);
-  shader.setFloat("offset", 0.5);
-glm::vec4 vec(1.0f, 0.0f, 0.0f, 1.0f);
-glm::mat4 trans = glm::mat4(1.0f);
-trans = glm::translate(trans, glm::vec3(1.0f, 1.0f, 0.0f));
-vec = trans * vec;
-std::cout << vec.x << vec.y << vec.z << std::endl;
+
   // main loop
   while (!glfwWindowShouldClose(window)) {
     float currentFrame = static_cast<float>(glfwGetTime());
@@ -263,12 +259,29 @@ std::cout << vec.x << vec.y << vec.z << std::endl;
     
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+    glm::mat4 trans = glm::mat4(1.0f);
+    trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
+    trans = glm::rotate(trans, (float) glfwGetTime(), glm::vec3(0.0f, 0.5f, 0.5f));
+    trans = glm::scale(trans, glm::vec3(0.5f, 0.5f, 0.0f));
+    
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
     shader.setFloat("mixStrength", mixStrength);
+    shader.setMatrix4("transform", trans, GL_FALSE);
 
     glBindVertexArray(VAO1);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+    trans = glm::mat4(1.0f);
+    trans = glm::translate(trans, glm::vec3(-0.5f, 0.5f, 0.0f));
+    trans = glm::rotate(trans, (float) glfwGetTime(), glm::vec3(0.0f, 0.5f, 0.5f));
+    float sin_v = std::sin((float)glfwGetTime());
+    trans = glm::scale(trans, glm::vec3(sin_v, sin_v, 0.0f));
+
+    shader.setFloat("mixStrength", mixStrength);
+    shader.setMatrix4("transform", trans, GL_FALSE);
+
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     glfwPollEvents();

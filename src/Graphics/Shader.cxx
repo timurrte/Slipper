@@ -4,6 +4,8 @@
 #include <fstream>
 #include <sstream>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <glad/glad.h>
 
 namespace GraphicsGL {
@@ -71,15 +73,18 @@ namespace GraphicsGL {
   
   glDeleteShader(vertex);
   glDeleteShader(fragment);
-  };
+  }
   void Shader::use() { glUseProgram(ID); };
   void Shader::setBool(const std::string &name, bool value) const {
     glUniform1i(glGetUniformLocation(ID, name.c_str()), (int)value);
-  };
+  }
   void Shader::setInt(const std::string &name, int value) const {
     glUniform1i(glGetUniformLocation(ID, name.c_str()), value);
-  };
+  }
   void Shader::setFloat(const std::string &name, float value) const {
     glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
-  };  
+  }
+  void Shader::setMatrix4(const std::string &name, const glm::mat4& mat, bool transpose) const {
+    glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, transpose, glm::value_ptr(mat));
+  }
 };
