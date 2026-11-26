@@ -63,7 +63,7 @@ namespace {
     -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 };
 
-unsigned int kIndices1[] = {0, 1, 3, 1, 2, 3};
+unsigned int indices[] = {0, 1, 3, 1, 2, 3};
 void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
   glViewport(0, 0, width, height);
 }
@@ -134,21 +134,12 @@ int run() {
   glBindBuffer(GL_ARRAY_BUFFER, VBO1);
   glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-  // EBO1 (must be bound while VAO1 is bound so VAO1 records it)
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO1);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(kIndices1), kIndices1,
-               GL_STATIC_DRAW);
-
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), nullptr);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), nullptr);
   glEnableVertexAttribArray(0);
 
-  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
+  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float),
                         reinterpret_cast<void *>(3 * sizeof(float)));
   glEnableVertexAttribArray(1);
-
-  glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
-                        reinterpret_cast<void *>(6 * sizeof(float)));
-  glEnableVertexAttribArray(2);
 
   // First texture
   stbi_set_flip_vertically_on_load(true);  
@@ -206,7 +197,7 @@ int run() {
 
   glm::mat4 projection;
   projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
-  
+  // glEnable(GL_DEPTH_TEST); 
   while (!glfwWindowShouldClose(window)) {
     float currentFrame = static_cast<float>(glfwGetTime());
     deltaTime = currentFrame - lastFrame;
@@ -214,13 +205,11 @@ int run() {
     processInput(window);
     
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-    glm::mat4 trans = glm::mat4(1.0f);
-    trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
-    trans = glm::scale(trans, glm::vec3(0.5f, 0.5f, 0.0f));
-    
+   
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+glm::mat4 model = glm::mat4(1.0f);
+model = glm::rotate(model, static_cast<float>(glfwGetTime()) * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
 
     shader.setFloat("mixStrength", mixStrength);
     shader.setMatrix4("model", model, false);
@@ -228,7 +217,7 @@ int run() {
     shader.setMatrix4("projection", projection, false);
 
     glBindVertexArray(VAO1);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
 
     glfwPollEvents();
     glfwSwapBuffers(window);
