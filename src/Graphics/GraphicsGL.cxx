@@ -197,7 +197,7 @@ int run() {
 
   glm::mat4 projection;
   projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
-  // glEnable(GL_DEPTH_TEST); 
+  glEnable(GL_DEPTH_TEST); 
   while (!glfwWindowShouldClose(window)) {
     float currentFrame = static_cast<float>(glfwGetTime());
     deltaTime = currentFrame - lastFrame;
