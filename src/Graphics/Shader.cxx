@@ -84,7 +84,7 @@ namespace GraphicsGL {
   void Shader::setFloat(const std::string &name, float value) const {
     glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
   }
-  void Shader::setMatrix4(const std::string &name, const glm::mat4& mat, bool transpose) const {
+  void Shader::setMatrix4(const std::string &name, const glm::mat4& mat, bool transpose = false) const {
     glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, transpose, glm::value_ptr(mat));
   }
 };
