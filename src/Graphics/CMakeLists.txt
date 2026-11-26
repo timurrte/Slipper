@@ -4,11 +4,13 @@ target_sources(GraphicsGL
     PRIVATE
         GraphicsGL.cxx
 	Shader.cxx
+	debug.cxx
     PUBLIC
         FILE_SET HEADERS
         FILES
             GraphicsGL.h
 	    Shader.h
+	    debug.hpp
 )
 find_package(OpenGL REQUIRED)
 
